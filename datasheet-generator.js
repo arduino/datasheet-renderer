@@ -65,7 +65,7 @@ const generatePDFFromMarkdown = async (datasheet, relativeTargetPath) => {
     }
     // console.debug("Completed MD to HTML \t--> \tstep 1 of 4")
     
-    const identifierWithRevision = hardwareRevision ? `${identifier}-${datasheet.normalizedHardwareRevision}` : identifier;
+    const identifierWithRevision = hardwareRevision ? `${identifier}-${datasheet.normalizedHardwareRevision.toLowerCase()}` : identifier;
     const datasheetPDFName = identifierWithRevision + DATASHEET_SUFFIX
     const pdfTargetPath = path.resolve(`${relativeBuildPath}/${datasheetPDFName}`)
 

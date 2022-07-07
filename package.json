@@ -1,19 +1,33 @@
 {
   "name": "datasheet-renderer",
   "version": "1.0.0",
-  "description": "A tool to render datasheets PDFs from markdown.",
-  "main": "index.js",
+  "description": "-   create content reference automatically -   number sections accordingly -   create page header for pdf version",
+  "type": "module",
+  "main": "datasheet-generator.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "Sebastian Romero",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bcmi-labs/datasheet-renderer.git"
   },
-  "author": "Sebastian Romero",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bcmi-labs/datasheet-renderer/issues"
+  "dependencies": {
+    "express": "^4.17.1",
+    "find-parent-dir": "^0.3.1",
+    "front-matter": "^4.0.2",
+    "fs": "^0.0.1-security",
+    "html-pdf-node": "^1.0.7",
+    "js-yaml": "^4.1.0",
+    "jsdom": "^16.4.0",
+    "marked": "^2.0.1",
+    "pdf-parser": "^1.0.5",
+    "puppeteer": "^10.4.0",
+    "util": "^0.12.3"
   },
   "homepage": "https://github.com/bcmi-labs/datasheet-renderer#readme"
+  "devDependencies": {
+    "@types/find-parent-dir": "^0.3.0"
+  }
 }

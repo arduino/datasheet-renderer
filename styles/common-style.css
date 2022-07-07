@@ -41,6 +41,14 @@ td, th {
     padding-right: 5px;
 }
 
+td[align="right"], th[align="right"] {
+    text-align: right;
+}
+
+td[align="center"], th[align="center"] {
+    text-align: center;
+}
+
 th {
     background-color: #bdc7c7;
 }
