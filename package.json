@@ -1,0 +1,19 @@
+{
+  "name": "datasheet-renderer",
+  "version": "1.0.0",
+  "description": "A tool to render datasheets PDFs from markdown.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcmi-labs/datasheet-renderer.git"
+  },
+  "author": "Sebastian Romero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcmi-labs/datasheet-renderer/issues"
+  },
+  "homepage": "https://github.com/bcmi-labs/datasheet-renderer#readme"
+}
