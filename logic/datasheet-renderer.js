@@ -16,7 +16,8 @@ export class DatasheetRenderer {
         this.datasheetsSourcePath = datasheetsSourcePath ?? this.config.defaultSourcePath;
     }
 
-    get datasheets(){        
+    get datasheets(){
+        if(this._datasheets) return this._datasheets;
         let datasheetFiles = fileHelper.findAllFiles(this.datasheetsSourcePath, this.config.datasheetFile, this.config.excludePatterns);
         let datasheets = datasheetFiles.map((path) => {
             return new Datasheet(path);
@@ -28,7 +29,8 @@ export class DatasheetRenderer {
             }
             return !isDraft;
         });
-        return datasheets;
+        this._datasheets = datasheets;
+        return this._datasheets;
     }
 
 
@@ -36,7 +38,8 @@ export class DatasheetRenderer {
      * Generates PDF files from the supplied markdown files
      * @param {*} datasheets An array of Datasheet objects
      * @param {*} targetPath The path where the PDF files will be saved
-     * @returns The amount of generated PDFs
+     * @returns A list of objects containing the rendered datasheets. 
+     * The object has the properties "datasheet" and "pdfPath".
      */
     async generatePDFsFromMarkdownFiles(datasheets, targetPath = null){
         let targetBuildPath = targetPath ?? this.config.relativeBuildPath;
@@ -56,11 +59,11 @@ export class DatasheetRenderer {
                 return null;
             }));
         }
-        return Promise.all(tasks).then(async (paths) => {
-            const builtPDFs = paths.filter((element) => element != null);
+        return Promise.all(tasks).then(async (results) => {
+            const renderedDatasheets = results.filter((result) => result != null);
             this.webResourceProvider.end();
             await this.pdfManager.end();
-            return builtPDFs.length;
+            return renderedDatasheets;
         });
     }
 
@@ -106,13 +109,16 @@ export class DatasheetRenderer {
         // create new final pdf document from updated html file with page-numbers
         await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)
         
+        let result = { "datasheet": datasheet, "pdfPath": null }
+
         if(existsSync(pdfTargetPath)){
-            console.log("👌 Datasheet saved at: " + pdfTargetPath)	
+            result.pdfPath = pdfTargetPath
+            console.log("👌 Datasheet saved at: " + pdfTargetPath)
         } else {
-            throw "❌ Datasheet couldn't be created at: " + pdfTargetPath;
+            throw "❌ Datasheet couldn't be created at: " + pdfTargetPath
         }
         
         unlinkSync(datasheetHTMLTargetPath)
-        return pdfTargetPath;
+        return result
     }
 }
