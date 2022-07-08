@@ -36,15 +36,14 @@ export class DatasheetRenderer {
 
     /**
      * Generates PDF files from the supplied markdown files
-     * @param {*} datasheets An array of Datasheet objects
      * @param {*} targetPath The path where the PDF files will be saved
      * @returns A list of objects containing the rendered datasheets. 
      * The object has the properties "datasheet" and "pdfPath".
      */
-    async generatePDFsFromMarkdownFiles(datasheets, targetPath = null){
+    async generatePDFsFromMarkdownFiles(targetPath = null){
         let targetBuildPath = targetPath ?? this.config.relativeBuildPath;
 
-        for(let datasheet of datasheets){
+        for(let datasheet of this.datasheets){
             this.webResourceProvider.addResource(datasheet);
         }
 
@@ -52,7 +51,7 @@ export class DatasheetRenderer {
         await this.pdfManager.begin();
         let tasks = [];
         
-        for(let datasheet of datasheets){
+        for(let datasheet of this.datasheets){
             console.log(`ℹ️ Generating datasheet for ${datasheet.contentFilePath} ...`);
             tasks.push(this.generatePDFFromMarkdown(datasheet, targetBuildPath).catch( error => {
                 console.error(error);
