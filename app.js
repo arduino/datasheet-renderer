@@ -4,8 +4,8 @@ import { DatasheetRenderer } from './logic/datasheet-renderer.js';
 
 (async function main() {
     const args = process.argv.slice(2)
-    const datasheetsSourcePath = args[1];
     const configFilePath = args[0];
+    const datasheetsSourcePath = args[1];
     const renderer = new DatasheetRenderer(configFilePath, datasheetsSourcePath);
     
     const generatedDatasheets = (await renderer.generatePDFsFromMarkdownFiles()).length;
