@@ -2,7 +2,7 @@ import { existsSync, readFileSync, statSync } from 'fs';
 import { load } from 'js-yaml';
 import fm from 'front-matter';
 import findParentDir from 'find-parent-dir';
-import marked from 'marked';
+import { marked } from 'marked';
 import * as path from 'path';
 
 export class Datasheet {
