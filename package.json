@@ -24,8 +24,7 @@
     "marked": "^2.0.1",
     "pdf-parser": "^1.0.5",
     "puppeteer": "^10.4.0",
-    "util": "^0.12.3",
-    "@types/find-parent-dir": "^0.3.0"
+    "util": "^0.12.3"
   },
   "devDependencies": {
   }

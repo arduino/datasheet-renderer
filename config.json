@@ -1,8 +1,0 @@
-{
-    "datasheetFile" : "datasheet.md",
-    "excludePatterns" : [".git", "/template", "/_unlisted"],
-    "defaultSourcePath" : "../../content/hardware",
-    "relativeBuildPath" : "../downloads",
-    "datasheetsFolder" : "datasheets",
-    "previousDocumentationFolder" : "previous-documentation"
-}
