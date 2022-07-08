@@ -70,7 +70,8 @@ export class DatasheetRenderer {
     async generatePDFFromMarkdown(datasheet, relativeTargetPath){
 
         let contentListMap = []    
-        const { identifier, hardwareRevision } = datasheet.metadata
+        const identifier = datasheet.identifier
+        const { hardwareRevision} = datasheet.metadata
         
         const relativeBuildPath = datasheet.constructTargetBuildPath(relativeTargetPath);    
         fileHelper.createDirectoryIfNecessary(relativeBuildPath)

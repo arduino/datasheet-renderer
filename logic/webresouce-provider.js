@@ -17,7 +17,7 @@ export class WebResourceProvider {
     }
 
     resourceURL(datasheet, filename){
-        const identifier = datasheet.metadata.identifier
+        const identifier = datasheet.identifier
         const contentURL = `http://localhost:${SERVER_PORT}`
         return `${contentURL}/${identifier}/${filename}`
     }

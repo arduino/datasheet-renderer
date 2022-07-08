@@ -55,7 +55,7 @@ export class Datasheet {
     }
 
     get identifier(){
-        return this.metadata.identifier
+        return this.metadata.identifier.replace(/\s+/g, "-")
     }
 
     get modifiedDate() {
