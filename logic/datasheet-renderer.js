@@ -108,16 +108,14 @@ export class DatasheetRenderer {
         // create new final pdf document from updated html file with page-numbers
         await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)
         
-        let result = { "datasheet": datasheet, "pdfPath": null }
 
         if(existsSync(pdfTargetPath)){
-            result.pdfPath = pdfTargetPath
             console.log("👌 Datasheet saved at: " + pdfTargetPath)
         } else {
             throw "❌ Datasheet couldn't be created at: " + pdfTargetPath
         }
         
         unlinkSync(datasheetHTMLTargetPath)
-        return result
+        return { "datasheet": datasheet, "pdfPath": pdfTargetPath }
     }
 }
