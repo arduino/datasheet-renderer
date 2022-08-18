@@ -68,12 +68,13 @@ export class DatasheetRenderer {
 
     // main function that coordinates the creation of a datasheet pdf from the .md datasheet source file
     async generatePDFFromMarkdown(datasheet, relativeTargetPath){
-
+        
         let contentListMap = []    
         const identifier = datasheet.identifier
         const { hardwareRevision} = datasheet.metadata
         
         const relativeBuildPath = datasheet.constructTargetBuildPath(relativeTargetPath);    
+        console.log("Rendering into build path " + relativeBuildPath)
         fileHelper.createDirectoryIfNecessary(relativeBuildPath)
         
         const htmlRenderer = new HTMLRenderer(datasheet);

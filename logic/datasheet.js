@@ -99,6 +99,10 @@ export class Datasheet {
         let datasheetsParentDirectory;
         let datasheetsDirectoryName;
         datasheetsDirectoryName = this.config.datasheetsFolder;
+        if(!datasheetsDirectoryName){
+            throw "❌ 'datasheetsFolder' property is not defined in config"
+        }
+
         datasheetsParentDirectory = findParentDir.sync(sourceFilePath, datasheetsDirectoryName);
         
         // Check for legacy foldername
@@ -106,6 +110,11 @@ export class Datasheet {
             datasheetsDirectoryName = "datasheet";
             datasheetsParentDirectory = findParentDir.sync(sourceFilePath, 'datasheet');
         }
+
+        if(!datasheetsParentDirectory){
+            throw "❌ Datasheet doesn't have a valid parent directory."
+        }
+
         let relativeBuildPath = `${datasheetsParentDirectory}${datasheetsDirectoryName}/${targetPath}`;
         if(this.metadata.isPreviousRevision) {
             relativeBuildPath += "/" + this.config.previousDocumentationFolder;
