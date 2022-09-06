@@ -112,7 +112,7 @@ export class Datasheet {
         }
 
         if(!datasheetsParentDirectory){
-            throw "❌ Datasheet doesn't have a valid parent directory."
+            throw `❌ Datasheet ${sourceFilePath} doesn't have a valid parent directory.`
         }
 
         let relativeBuildPath = `${datasheetsParentDirectory}${datasheetsDirectoryName}/${targetPath}`;
