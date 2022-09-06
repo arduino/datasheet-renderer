@@ -67,6 +67,14 @@ export class DatasheetRenderer {
         });
     }
 
+    writeHTMLFile(htmlRenderer, datasheetHTMLTargetPath){
+        try {
+            htmlRenderer.write(datasheetHTMLTargetPath)    
+        } catch (error) {
+            throw `❌ Couldn't write HTML file ${datasheetHTMLTargetPath}. ${error}`;
+        }
+    }
+
     // main function that coordinates the creation of a datasheet pdf from the .md datasheet source file
     async generatePDFFromMarkdown(datasheet, relativeTargetPath){
         
@@ -86,11 +94,7 @@ export class DatasheetRenderer {
         const datasheetHTMLTargetPath = `${realpathSync(path.dirname(datasheet.contentFilePath))}/${htmlFilename}`
         htmlRenderer.build()
         
-        try {
-            htmlRenderer.write(datasheetHTMLTargetPath)    
-        } catch (error) {
-            throw `❌ Couldn't write HTML file ${datasheetHTMLTargetPath}. ${error}`;
-        }
+        this.writeHTMLFile(htmlRenderer, datasheetHTMLTargetPath)
         // console.debug("Completed MD to HTML \t--> \tstep 1 of 4")
         
         const identifierWithRevision = hardwareRevision ? `${identifier}-${datasheet.normalizedHardwareRevision.toLowerCase()}` : identifier;
@@ -105,7 +109,7 @@ export class DatasheetRenderer {
             // console.debug("Calculate page numbers \t--> \tstep 3 of 4")
             headingsList = await this.pdfManager.reverseEngineerPageNumbers(headingsList, pdfTargetPath)	
             htmlRenderer.updatePageNumberInTableOfContents(headingsList)
-            htmlRenderer.write(datasheetHTMLTargetPath)	
+            this.writeHTMLFile(htmlRenderer, datasheetHTMLTargetPath)
     
             // console.debug("Finalize PDF \t\t--> \tstep 4 of 4")
             // create new final pdf document from updated html file with page-numbers
