@@ -36,7 +36,8 @@ export class DatasheetRenderer {
 
     /**
      * Generates PDF files from the supplied markdown files
-     * @param {*} targetPath The path where the PDF files will be saved
+     * @param {*} targetPath The path where the PDF files will be saved. 
+     * If omitted the value of the valuerelativeBuildPath property from the config fill is used.
      * @returns A list of objects containing the rendered datasheets. 
      * The object has the properties "datasheet" and "pdfPath".
      */
@@ -69,7 +70,7 @@ export class DatasheetRenderer {
     // main function that coordinates the creation of a datasheet pdf from the .md datasheet source file
     async generatePDFFromMarkdown(datasheet, relativeTargetPath){
         
-        let contentListMap = []    
+        let headingsList = []    
         const identifier = datasheet.identifier
         const { hardwareRevision} = datasheet.metadata
         
@@ -78,7 +79,7 @@ export class DatasheetRenderer {
         fileHelper.createDirectoryIfNecessary(relativeBuildPath)
         
         const htmlRenderer = new HTMLRenderer(datasheet);
-        contentListMap = htmlRenderer.enumerateHeadings()
+        headingsList = htmlRenderer.enumerateHeadings()
         if(identifier) htmlRenderer.addSubtitle(this.config.subtitle, this.config.identifierPrefix, identifier);
         
         const htmlFilename = `${(Math.random() + 1).toString(36).substring(7)}-datasheet.html`;    
@@ -98,18 +99,18 @@ export class DatasheetRenderer {
 
         const htmlFileURL = this.webResourceProvider.resourceURL(datasheet, htmlFilename)
         // console.debug("Prepare PDF \t\t--> \tstep 2 of 4")
-        await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)
 
-        // re-import the created pdf file to calculate page-numbers for table of content 
-        // console.debug("Calculate page numbers \t--> \tstep 3 of 4")
-        contentListMap = await this.pdfManager.reverseEngineerPageNumbers(contentListMap, pdfTargetPath)	
-        htmlRenderer.updatePageNumberInTableOfContents(contentListMap)
-        htmlRenderer.write(datasheetHTMLTargetPath)	
-
-        // console.debug("Finalize PDF \t\t--> \tstep 4 of 4")
-        // create new final pdf document from updated html file with page-numbers
-        await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)
-        
+        if(await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)){
+            // re-import the created pdf file to calculate page-numbers for table of content 
+            // console.debug("Calculate page numbers \t--> \tstep 3 of 4")
+            headingsList = await this.pdfManager.reverseEngineerPageNumbers(headingsList, pdfTargetPath)	
+            htmlRenderer.updatePageNumberInTableOfContents(headingsList)
+            htmlRenderer.write(datasheetHTMLTargetPath)	
+    
+            // console.debug("Finalize PDF \t\t--> \tstep 4 of 4")
+            // create new final pdf document from updated html file with page-numbers
+            await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)
+        }
 
         if(existsSync(pdfTargetPath)){
             console.log("👌 Datasheet saved at: " + pdfTargetPath)
