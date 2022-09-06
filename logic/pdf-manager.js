@@ -56,6 +56,8 @@ export class PDFManager {
         }
         page.close();
         if(browserLaunchedAutomatically) await this.end();
+        
+        return !errorOccurred;
     }
 
     // HACK: to retrieve correct page numbers the pdf file is created twice the first time to calculate on what page
