@@ -15,7 +15,7 @@
   "author": "Sebastian Romero",
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/bcmi-labs/datasheet-renderer.git"
+    "url": "ssh://git@github.com/arduino/datasheet-renderer.git"
   },
   "license": "ISC",
   "dependencies": {
