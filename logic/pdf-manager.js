@@ -6,9 +6,11 @@ import parser from 'pdf-parser';
 import { readFileSync } from 'fs';
 import puppeteer from 'puppeteer';
 
-const STYLES_PATH = "./styles"
-
 export class PDFManager {
+
+    constructor(assetsPath){
+        this._assetsPath = assetsPath;
+    }
 
     async begin(){
         console.log("ℹ️ Launching Puppeteer...");
@@ -124,7 +126,7 @@ export class PDFManager {
     getPDFProperties(htmlRenderer){
         const datasheet = htmlRenderer.datasheet;
         // read svg logo data
-        const specificLogoSVGdata = readFileSync(`${STYLES_PATH}/${datasheet.metadata.type}-logo.svg`)    
+        const specificLogoSVGdata = readFileSync(`${this._assetsPath}/${datasheet.metadata.type}-logo.svg`)    
         const revisionString = datasheet.metadata.hardwareRevision ? ` (${datasheet.metadata.hardwareRevision})`: ''; 
 
         let options = {

@@ -9,11 +9,12 @@ import { WebResourceProvider } from './webresouce-provider.js';
 import { Datasheet } from './datasheet.js';
 
 export class DatasheetRenderer {
-    constructor(configFilePath, datasheetsSourcePath = null){
-        this.webResourceProvider = new WebResourceProvider();
-        this.pdfManager = new PDFManager();
+    constructor(configFilePath, datasheetsSourcePath = null, styleSheetsPath = null){
         this.config = load(readFileSync(configFilePath, 'utf8'));
         this.datasheetsSourcePath = datasheetsSourcePath ?? this.config.defaultSourcePath;
+        this.styleSheetsPath = styleSheetsPath ?? this.config.styleSheetsPath;
+        this.webResourceProvider = new WebResourceProvider();
+        this.pdfManager = new PDFManager(this.styleSheetsPath);
     }
 
     get datasheets(){
@@ -81,12 +82,12 @@ export class DatasheetRenderer {
         let headingsList = []    
         const identifier = datasheet.identifier
         const { hardwareRevision} = datasheet.metadata
+        const relativeBuildPath = datasheet.constructTargetBuildPath(relativeTargetPath, this.config.datasheetsFolder, this.config.previousDocumentationFolder);    
         
-        const relativeBuildPath = datasheet.constructTargetBuildPath(relativeTargetPath);    
         console.log("Rendering into build path " + relativeBuildPath)
         fileHelper.createDirectoryIfNecessary(relativeBuildPath)
         
-        const htmlRenderer = new HTMLRenderer(datasheet);
+        const htmlRenderer = new HTMLRenderer(datasheet, this.styleSheetsPath);
         headingsList = htmlRenderer.enumerateHeadings()
         if(identifier) htmlRenderer.addSubtitle(this.config.subtitle, this.config.identifierPrefix, identifier);
         

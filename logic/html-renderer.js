@@ -1,11 +1,10 @@
 import jsdom from 'jsdom';
 import { writeFileSync, existsSync, readFileSync } from 'fs';
 
-const STYLES_PATH = "./styles"
-
 export class HTMLRenderer {
-    constructor(datasheet){
+    constructor(datasheet, styleSheetsPath){
         this._datasheet = datasheet;
+        this._styleSheetsPath = styleSheetsPath;
     }
 
     get datasheet(){
@@ -131,7 +130,7 @@ export class HTMLRenderer {
 
     // helper function to get the css file path
     getStylesheetsForType(type){
-        return [`${STYLES_PATH}/common-style.css`, `${STYLES_PATH}/${type}-style.css`]
+        return [`${this._styleSheetsPath}/common-style.css`, `${this._styleSheetsPath}/${type}-style.css`]
     }
 
     /**

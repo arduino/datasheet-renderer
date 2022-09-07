@@ -48,12 +48,6 @@ export class Datasheet {
         }
     }
 
-    get config(){
-        if(this._config) return this._config;   
-        this._config = load(readFileSync("./config.json", 'utf8'));
-        return this._config;
-    }
-
     get identifier(){
         return this.metadata.identifier?.replace(/\s+/g, "-")
     }
@@ -90,20 +84,15 @@ export class Datasheet {
 
     /**
      * Constructs the final build path taking into account the previous documentation flag.
-     * @param {*} targetPath A relative path starting from parent directory of the
+     * @param {String} targetPath A relative path starting from parent directory of the
+     * @param {String} datasheetsDirectoryName Name of the directory in which the datasheet markdown file is stored
+     * @param {String} previousDocumentationFolder Name of the directoy in which previous revisions of the datasheet shall be stored
      * datasheets which defines where to store the datasheet PDF.
      * @returns 
      */
-     constructTargetBuildPath(targetPath){        
+     constructTargetBuildPath(targetPath, datasheetsDirectoryName = "datasheets", previousDocumentationFolder = null){        
         const sourceFilePath = path.dirname(this.contentFilePath);
-        let datasheetsParentDirectory;
-        let datasheetsDirectoryName;
-        datasheetsDirectoryName = this.config.datasheetsFolder;
-        if(!datasheetsDirectoryName){
-            throw "❌ 'datasheetsFolder' property is not defined in config"
-        }
-
-        datasheetsParentDirectory = findParentDir.sync(sourceFilePath, datasheetsDirectoryName);
+        let datasheetsParentDirectory = findParentDir.sync(sourceFilePath, datasheetsDirectoryName);
         
         // Check for legacy foldername
         if (!datasheetsParentDirectory) {
@@ -116,8 +105,13 @@ export class Datasheet {
         }
 
         let relativeBuildPath = `${datasheetsParentDirectory}${datasheetsDirectoryName}/${targetPath}`;
+        
+        // Older revisions are stored in a different folder
         if(this.metadata.isPreviousRevision) {
-            relativeBuildPath += "/" + this.config.previousDocumentationFolder;
+            if(!previousDocumentationFolder){
+                throw "❌ 'previousDocumentationFolder' property is not defined"
+            }
+            relativeBuildPath += "/" + previousDocumentationFolder;
         }
         return relativeBuildPath;
     }
