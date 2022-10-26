@@ -4,7 +4,9 @@
   "description": "A tool to render datasheet PDFs from markdown.",
   "type": "module",
   "main": "index.js",
-  "bin": { "datasheet-renderer" : "app.js" },
+  "bin": {
+    "datasheet-renderer": "app.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
