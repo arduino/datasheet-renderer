@@ -1,5 +1,5 @@
 {
-  "name": "@arduino/datasheet-renderer",
+  "name": "datasheet-renderer",
   "version": "1.0.0",
   "description": "A tool to render datasheet PDFs from markdown.",
   "type": "module",
@@ -9,11 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "public"
-  },
+  },  
   "author": "Sebastian Romero",
   "repository": {
     "type": "git",
