@@ -3,7 +3,7 @@
  * https://www.npmjs.com/package/pdfreader
  */
 import parser from 'pdf-parser';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import puppeteer from 'puppeteer';
 
 const BROWSER_TIMEOUT = 120000;
@@ -59,8 +59,13 @@ export class PDFManager {
             await page.pdf(properties);
         }
         page.close();
-        if(browserLaunchedAutomatically) await this.end();
-        
+        if(browserLaunchedAutomatically) await this.end();    
+
+        if(!existsSync(targetPath)){
+            console.error(`Failed to create PDF ${targetPath}`);
+            errorOccurred = true;
+        }
+
         return !errorOccurred;
     }
 
