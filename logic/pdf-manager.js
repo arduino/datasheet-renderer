@@ -6,6 +6,8 @@ import parser from 'pdf-parser';
 import { readFileSync } from 'fs';
 import puppeteer from 'puppeteer';
 
+const BROWSER_TIMEOUT = 120000;
+
 export class PDFManager {
 
     constructor(assetsPath){
@@ -34,7 +36,7 @@ export class PDFManager {
         }
         
         const page = await this.browser.newPage();
-        page.setDefaultNavigationTimeout(60000);
+        page.setDefaultNavigationTimeout(BROWSER_TIMEOUT);
 
         // console.log(`Loading ${url}...`)
         let errorOccurred = false;
