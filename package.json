@@ -1,6 +1,6 @@
 {
   "name": "datasheet-renderer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tool to render datasheet PDFs from markdown.",
   "type": "module",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },  
+  },
   "author": "Sebastian Romero",
   "repository": {
     "type": "git",
