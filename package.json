@@ -1,6 +1,6 @@
 {
   "name": "datasheet-renderer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A tool to render datasheet PDFs from markdown.",
   "type": "module",
   "main": "index.js",
