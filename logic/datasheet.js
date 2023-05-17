@@ -4,6 +4,7 @@ import fm from 'front-matter';
 import findParentDir from 'find-parent-dir';
 import { marked } from 'marked';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 export class Datasheet {
 
@@ -52,8 +53,30 @@ export class Datasheet {
         return this.metadata.identifier?.replace(/\s+/g, "-")
     }
 
-    get modifiedDate() {
+    get commitDate(){
         try {
+            // Walk up the directory tree until we find a .git folder
+            const sourceFilePath = path.dirname(this.contentFilePath);
+            const gitDirectory = findParentDir.sync(sourceFilePath, '.git');
+            if(!gitDirectory) return null;
+            
+            // Get relative path of the content file to the git directory
+            const relativePath = path.relative(gitDirectory, this.contentFilePath);
+
+            // Execute git command to get the date of the last commit
+            const command = `cd ${gitDirectory}; git log -1 --format=%ct '${relativePath}'`;
+            const commitTimestamp = execSync(command, { encoding: 'utf-8' });
+            return this.formatDate(new Date(commitTimestamp * 1000));
+        } catch (error) {
+            // console.log(error);
+            return null;
+        }
+    }
+
+    get modifiedDate() {        
+        try {
+            const commitDate = this.commitDate;
+            if(commitDate) return commitDate;
             const stats = statSync(this.contentFilePath);
             return this.formatDate(stats.mtime);
         } catch (error) {
