@@ -56,7 +56,12 @@ export class PDFManager {
             const properties = this.getPDFProperties(htmlRenderer);
             properties.path = targetPath;
             // console.log(`Creating PDF ${properties.path}...`)
-            await page.pdf(properties);
+            try {
+                await page.pdf(properties);
+            } catch (error) {
+                console.error(`Failed to render PDF ${properties.path} from URL ${url}. ${error}`);
+                errorOccurred = true;
+            }
         }
         page.close();
         if(browserLaunchedAutomatically) await this.end();    
