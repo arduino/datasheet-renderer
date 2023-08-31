@@ -17,7 +17,7 @@ export class PDFManager {
     async begin(){
         console.log("ℹ️ Launching Puppeteer...");
         const options = ['--disable-setuid-sandbox', '--no-sandbox'];
-        this.browser = await puppeteer.launch({ headless: true, timeout: 60000, args: options });
+        this.browser = await puppeteer.launch({ headless: "new", timeout: 60000, args: options });
     }
 
     async end(){
