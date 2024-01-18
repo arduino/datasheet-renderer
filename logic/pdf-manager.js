@@ -3,10 +3,12 @@
  * https://www.npmjs.com/package/pdfreader
  */
 import parser from 'pdf-parser';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, unlinkSync } from 'fs';
 import puppeteer from 'puppeteer';
 
 const BROWSER_TIMEOUT = 120000;
+const PDF_TIMEOUT = 120000;
+const PDF_RENDER_RETRY_COUNT = 3;
 
 export class PDFManager {
 
@@ -55,22 +57,32 @@ export class PDFManager {
         if(!errorOccurred){
             const properties = this.getPDFProperties(htmlRenderer);
             properties.path = targetPath;
+            properties.timeout = PDF_TIMEOUT;
             // console.log(`Creating PDF ${properties.path}...`)
-            try {
-                await page.pdf(properties);
-            } catch (error) {
-                console.error(`Failed to render PDF ${properties.path} from URL ${url}. ${error}`);
-                errorOccurred = true;
+
+            // Try to render the PDF multiple times as it sometimes fails for no apparent reason
+            for(let i = 0; i < PDF_RENDER_RETRY_COUNT; ++i){
+                try {
+                    await page.pdf(properties);
+                    break;
+                } catch (error) {
+                    if(i == PDF_RENDER_RETRY_COUNT - 1) {
+                        console.error(`Failed to create PDF ${properties.path} after ${PDF_RENDER_RETRY_COUNT} attempts.`);
+                        // Clean up the file if it exists, it might be corrupted
+                        if(existsSync(targetPath)) unlinkSync(targetPath);
+                        errorOccurred = true;
+                    } else {
+                        console.warn(`Retrying to create PDF ${properties.path} due to error (${error})...`);                    
+                    }
+                }
             }
         }
         page.close();
         if(browserLaunchedAutomatically) await this.end();    
 
         if(!existsSync(targetPath)){
-            console.error(`Failed to create PDF ${targetPath}`);
             errorOccurred = true;
         }
-
         return !errorOccurred;
     }
 
