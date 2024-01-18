@@ -117,13 +117,14 @@ export class DatasheetRenderer {
             await this.pdfManager.createPDFFromURL(htmlFileURL, htmlRenderer, pdfTargetPath)
         }
 
-        if(existsSync(pdfTargetPath)){
-            console.log("👌 Datasheet saved at: " + pdfTargetPath)
-        } else {
+        // Clean up the temporary html file
+        unlinkSync(datasheetHTMLTargetPath)
+
+        if(!existsSync(pdfTargetPath)){
             throw "❌ Datasheet couldn't be created at: " + pdfTargetPath
         }
         
-        unlinkSync(datasheetHTMLTargetPath)
+        console.log("👌 Datasheet saved at: " + pdfTargetPath)
         return { "datasheet": datasheet, "pdfPath": pdfTargetPath }
     }
 }
