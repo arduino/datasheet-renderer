@@ -26,10 +26,9 @@
     "jsdom": "^16.7.0",
     "marked": "^4.3.0",
     "pdf-parser": "^1.0.5",
-    "puppeteer": "^19.11.1",
+    "puppeteer": "^21.7.0",
     "util": "^0.12.5"
   },
-  "devDependencies": {},
   "bugs": {
     "url": "https://github.com/arduino/datasheet-renderer/issues"
   },
