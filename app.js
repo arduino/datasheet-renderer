@@ -14,8 +14,8 @@ import { DatasheetRenderer } from './logic/datasheet-renderer.js';
     const failedDatasheets = renderer.datasheets.length - generatedDatasheets;
     
     if(generatedDatasheets > 0)
-        console.log("✅ %s Datasheets generated.", generatedDatasheets);
+        console.log("✅ %s Datasheets rendered.", generatedDatasheets);
     if(failedDatasheets > 0)
-        console.log("❌ %s Datasheets couldn't be generated.", failedDatasheets);
+        console.log("❌ %s Datasheets couldn't be rendered.", failedDatasheets);
     process.exit(allDatasheetsGenerated ? 0 : -1);
 })()
