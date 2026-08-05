@@ -19,9 +19,18 @@ export class DatasheetRenderer {
 
     get datasheets(){
         if(this._datasheets) return this._datasheets;
+        const datasheetFileNames = Array.isArray(this.config.datasheetFile) ? this.config.datasheetFile : [this.config.datasheetFile];
         let datasheetFiles = fileHelper.findAllFiles(this.datasheetsSourcePath, this.config.datasheetFile, this.config.excludePatterns);
-        let datasheets = datasheetFiles.map((path) => {
-            return new Datasheet(path);
+        // Exact filename match (search is substring-based) + de-dupe, so each language config stays scoped to its own files.
+        const seenPaths = new Set();
+        datasheetFiles = datasheetFiles.filter((filePath) => {
+            if(!datasheetFileNames.includes(path.basename(filePath))) return false;
+            if(seenPaths.has(filePath)) return false;
+            seenPaths.add(filePath);
+            return true;
+        });
+        let datasheets = datasheetFiles.map((filePath) => {
+            return new Datasheet(filePath);
         });
         datasheets = datasheets.filter((datasheet) => {
             const isDraft = datasheet.metadata?.isDraft;
@@ -88,6 +97,8 @@ export class DatasheetRenderer {
         fileHelper.createDirectoryIfNecessary(relativeBuildPath)
         
         const htmlRenderer = new HTMLRenderer(datasheet, this.styleSheetsPath);
+        // Remap localized headings to canonical ids for TOC/front-page; no-op when config has no "sections".
+        htmlRenderer.normalizeSectionIds(this.config.sections);
         headingsList = htmlRenderer.enumerateHeadings()
         if(identifier) htmlRenderer.addSubtitle(this.config.subtitle, this.config.identifierPrefix, identifier);
         
