@@ -35,14 +35,7 @@ export class HTMLRenderer {
         this.dom.window.document.body.prepend(subtitleElement)
     }
 
-    /**
-     * Localized datasheets translate the structural headings (e.g. "Contents" -> "Inhalt").
-     * The front-page layout (CSS) and the table of contents rely on the canonical English ids
-     * (contents, description, target-areas, features), so this remaps the localized headings to
-     * those ids based on the per-language config. Matching is done on the (case-insensitive,
-     * trimmed) heading text, therefore the config values must match the headings in the markdown.
-     * @param {Object} sections Map of canonical id -> localized heading text, e.g. { contents: "Inhalt" }
-     */
+    // Remap localized headings (e.g. "Inhalt") to canonical ids via the per-language config; matches on heading text.
     normalizeSectionIds(sections){
         if(!sections) return;
         const headings = Array.from(this.dom.window.document.querySelectorAll("h1"));
@@ -61,7 +54,7 @@ export class HTMLRenderer {
         // add content list section after the "contents" title
         let contentTitle = this.dom.window.document.getElementById("contents")
         if(!contentTitle){
-            // Localized datasheets may translate the "Contents" heading. When it can't be found
+            // Localized "Contents" heading may be translated; if not found, skip the TOC instead of crashing.
             console.log(`⚠️ No "contents" section found in ${this.datasheet.contentFilePath}; skipping table of contents.`);
             return tableOfContentsMap;
         }
