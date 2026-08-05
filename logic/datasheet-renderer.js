@@ -19,9 +19,21 @@ export class DatasheetRenderer {
 
     get datasheets(){
         if(this._datasheets) return this._datasheets;
+        const datasheetFileNames = Array.isArray(this.config.datasheetFile) ? this.config.datasheetFile : [this.config.datasheetFile];
         let datasheetFiles = fileHelper.findAllFiles(this.datasheetsSourcePath, this.config.datasheetFile, this.config.excludePatterns);
-        let datasheets = datasheetFiles.map((path) => {
-            return new Datasheet(path);
+        // The underlying search matches substrings, so a pattern like "datasheet.md" would also
+        // match localized files such as "de-datasheet.md". Keep only files whose name matches a
+        // configured datasheet file name exactly, so each (language) config stays scoped to its
+        // own files. Also de-duplicate paths that matched more than one configured pattern.
+        const seenPaths = new Set();
+        datasheetFiles = datasheetFiles.filter((filePath) => {
+            if(!datasheetFileNames.includes(path.basename(filePath))) return false;
+            if(seenPaths.has(filePath)) return false;
+            seenPaths.add(filePath);
+            return true;
+        });
+        let datasheets = datasheetFiles.map((filePath) => {
+            return new Datasheet(filePath);
         });
         datasheets = datasheets.filter((datasheet) => {
             const isDraft = datasheet.metadata?.isDraft;
@@ -88,6 +100,9 @@ export class DatasheetRenderer {
         fileHelper.createDirectoryIfNecessary(relativeBuildPath)
         
         const htmlRenderer = new HTMLRenderer(datasheet, this.styleSheetsPath);
+        // Remap localized structural headings (Contents/Description/...) to canonical ids so the
+        // TOC and front-page layout work for translated datasheets. No-op when config has no "sections".
+        htmlRenderer.normalizeSectionIds(this.config.sections);
         headingsList = htmlRenderer.enumerateHeadings()
         if(identifier) htmlRenderer.addSubtitle(this.config.subtitle, this.config.identifierPrefix, identifier);
         
