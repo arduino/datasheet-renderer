@@ -5,6 +5,17 @@ import findParentDir from 'find-parent-dir';
 import { marked } from 'marked';
 import * as path from 'path';
 
+// GitHub's alert syntax keeps notes out of inline HTML: > [!WARNING] becomes a class the stylesheet styles
+marked.use({
+    renderer: {
+        blockquote(quote) {
+            const marker = quote.match(/^\s*<p>\s*\[!(NOTE|WARNING|CAUTION)\]\s*\n?/i);
+            if (!marker) return `<blockquote>\n${quote}</blockquote>\n`;
+            return `<blockquote class="${marker[1].toLowerCase()}">\n${quote.replace(marker[0], '<p>')}</blockquote>\n`;
+        },
+    },
+});
+
 export class Datasheet {
 
     constructor(contentFilePath){
